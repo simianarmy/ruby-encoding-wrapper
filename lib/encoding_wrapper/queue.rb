@@ -180,7 +180,7 @@ module EncodingWrapper
 
       response[:list] = []
 
-      media_list = response[':xml'].css('response media')
+      media_list = response[:xml].css('response media')
 
       media_list.each do |media|
         obj = {}
@@ -222,8 +222,8 @@ module EncodingWrapper
       output = {:errors => [], :status => false, :xml => '', :message => ''}
       output[:xml] = Nokogiri::XML(response.body)
 
-      if response.css('errors error').length != 0
-        response.css('errors error').each { |error| output[:errors] << error.text }
+      if output[:xml].css('errors error').length != 0
+        output[:xml].css('errors error').each { |error| output[:errors] << error.text }
       else
         output[:status] = true
       end

@@ -1,4 +1,4 @@
-require File.join('.', File.dirname(__FILE__), *%w[.. lib encoding_wrapper.rb])
+require File.join(File.dirname(__FILE__), *%w[.. lib encoding_wrapper.rb])
 
 video_source = 'http://media.railscasts.com/assets/episodes/videos/272-markdown-with-redcarpet.mp4'
 
