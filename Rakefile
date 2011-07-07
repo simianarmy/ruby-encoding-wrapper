@@ -1,3 +1,15 @@
+# encoding: utf-8
+
+require 'rubygems'
+require 'bundler'
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
+
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
@@ -27,11 +39,11 @@ end
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   gem.name = "ruby-encoding-wrapper"
-  gem.description = "Simple wrapper for encoding.com API based on ruby."
+  gem.description = %Q{Simple wrapper for encoding.com API based on ruby.}
   gem.email = "info@antonzaytsev.com"
   gem.homepage = "https://github.com/mikhailov/ruby-encoding-wrapper"
   gem.authors = ["Mikhailov Anatoly", "Tsech Edward", "Anton Zaytsev"]
-  gem.summary = "Simple wrapper for encoding.com API based on ruby."
-  # dependencies defined in Gemfile
+  gem.summary = %Q{Simple wrapper for encoding.com API based on ruby.}
+  gem.license = "MIT"
 end
 Jeweler::RubygemsDotOrgTasks.new

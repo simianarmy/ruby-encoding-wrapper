@@ -11,7 +11,7 @@ puts result
 
 sleep 2
 
-puts instance.request_status(result[:media_id])
+puts instance.request_status(result[:media_id]).inspect
 
 sleep 2
 

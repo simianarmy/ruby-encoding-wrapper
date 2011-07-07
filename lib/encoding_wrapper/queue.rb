@@ -49,22 +49,17 @@ module EncodingWrapper
       # :size, :bitrate, :audio_bitrate, :audio_sample_rate,
       # :audio_channels_number, :framerate, :two_pass, :cbr,
       # :deinterlacing, :destination, :add_meta
-
-      xml = Nokogiri::XML::Builder.new do |q|
-        q.query {
-          q.userid  @user_id
-          q.userkey @user_key
-          q.action  action
-          q.source  source
-          q.notify  notify_url
-          q.format  { |f| yield f }
-        }
-      end.to_xml
+      xml = build_query(action) do |q|
+        q.source  source
+        q.notify  notify_url
+        q.format  { |f| yield f }
+      end
 
       response = request_send(xml)
 
       if response.css('errors error').length != 0
         message = response.css('errors error').text
+        media_id = nil
       else
         message = response.css('response message').text
         media_id = response.css('MediaID').text
@@ -79,14 +74,9 @@ module EncodingWrapper
 
 
     def request_status(media_id)
-      xml = Nokogiri::XML::Builder.new do |q|
-        q.query {
-          q.userid    @user_id
-          q.userkey   @user_key
-          q.action    EncodingWrapper::Actions::GET_STATUS
-          q.mediaid   media_id
-        }
-      end.to_xml
+      xml = build_query(EncodingWrapper::Actions::GET_STATUS) do |q|
+        q.mediaid   media_id
+      end
 
       response = request_send(xml)
 
@@ -109,16 +99,10 @@ module EncodingWrapper
 
 
     def cancel_media(media_id)
-      xml = Nokogiri::XML::Builder.new do |q|
-        q.query {
-          q.userid    @user_id
-          q.userkey   @user_key
-          q.action    EncodingWrapper::Actions::CANCEL_MEDIA
-          q.mediaid   media_id
-        }
-      end.to_xml
-
-      response = request_send(xml)
+      xml = build_query(EncodingWrapper::Actions::CANCEL_MEDIA) do |q|
+        q.mediaid   media_id
+      end
+      request_send(xml)
     end
 
 
@@ -132,18 +116,12 @@ module EncodingWrapper
       # :size, :bitrate, :audio_bitrate, :audio_sample_rate,
       # :audio_channels_number, :framerate, :two_pass, :cbr,
       # :deinterlacing, :destination, :add_meta
-
-      xml = Nokogiri::XML::Builder.new do |q|
-        q.query {
-          q.userid  @user_id
-          q.userkey @user_key
-          q.action  EncodingWrapper::Actions::ADD_MEDIA
-          q.source  source
-          q.notify  notify_url
-          q.format  { |f| yield f }
-        }
-      end.to_xml
-
+      xml = build_query(EncodingWrapper::Actions::ADD_MEDIA) do |q|
+        q.source  source
+        q.notify  notify_url
+        q.format  { |f| yield f }
+      end
+      
       response = request_send(xml)
 
       response[:media_id] = false
@@ -168,14 +146,8 @@ module EncodingWrapper
     end
 
     def media_list
-      xml = Nokogiri::XML::Builder.new do |q|
-        q.query {
-          q.userid    @user_id
-          q.userkey   @user_key
-          q.action    EncodingWrapper::Actions::GET_MEDIA_LIST
-        }
-      end.to_xml
-
+      xml = build_query EncodingWrapper::Actions::GET_MEDIA_LIST
+      
       response = request_send(xml)
 
       response[:list] = []
